@@ -6,8 +6,16 @@ import _config from './config'
 
 const config = merge(MUIConfig, _config)
 
-export default class Demo extends Component {
+export default class ReactApp extends Component {
   render() {
     return <App config={config} />
   }
 }
+
+// export default function ReactApp() {
+//   return (
+//     <React.Suspense>
+//       <App config={config} />
+//     </React.Suspense>
+//   );
+// }
