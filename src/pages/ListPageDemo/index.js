@@ -82,7 +82,7 @@ const ListPageDemo = () => {
     <ListPage
       name="list_demo"
       list={list}
-      fields={fields}
+      // fields={fields}
       Row={Row}
       listProps={{ itemSize: 91 }}
       getPageProps={(list) => {

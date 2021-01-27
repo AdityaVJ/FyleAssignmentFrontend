@@ -9,6 +9,13 @@ const config = {
   auth: {
     signInURL: '/signin',
   },
+  server: {
+    url: 'http://localhost:8080/api',
+    get banksUrl() {return `${this.url}/bank`},
+    get branchURL() {return `${this.url}/branches`},
+    get autocompleteURL() {return `${this.branchURL}/autocomplete`},
+    get searchURL() {return `${this.branchURL}/search`},
+  },
   routes,
   locale: {
     locales,
