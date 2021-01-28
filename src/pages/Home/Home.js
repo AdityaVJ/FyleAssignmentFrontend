@@ -127,7 +127,7 @@ function EnhancedTableHead(props) {
         {headCells.map((headCell) => (
           <TableCell
             key={headCell.id}
-            align={headCell.numeric ? 'right' : 'left'}
+            align='center'
             padding={headCell.disablePadding ? 'none' : 'default'}
             sortDirection={orderBy === headCell.id ? order : false}
           >
@@ -267,8 +267,13 @@ const handleRequestSort = (event, property) => {
 
 const fetchApiData = useCallback(() => {
 
+  const params = {
+    page: 0,
+    items: 10
+  };  
+
   console.log('fetch api data called')
-  axios.get(config.server.banksUrl).then((response) => {
+  axios.get(`${config.server.branchURL}/`, {params}).then((response) => {
     console.log('axios get called')
     if (response.status === 200) {
       let data = response.data;
@@ -415,15 +420,14 @@ else {
                           />
                         </TableCell>
                         <TableCell component="th" id={labelId} scope="row" padding="none">
-                          {bankData.name}
+                          {bankData.bankIFSC}
                         </TableCell>
-                        <TableCell align="right">{bankData.id}</TableCell>
-                        <TableCell align="right">{bankData.branch}</TableCell>
-                        <TableCell align="right">{bankData.branch}</TableCell>
-                        <TableCell align="right">{bankData.branch}</TableCell>
-                        <TableCell align="right">{bankData.branch}</TableCell>
-                        <TableCell align="right">{bankData.branch}</TableCell>
-                        <TableCell align="right">{bankData.branch}</TableCell>
+                        <TableCell align="center">{bankData.bankId}</TableCell>
+                        <TableCell align="center">{bankData.bankBranch}</TableCell>
+                        <TableCell align="center">{bankData.bankAddress}</TableCell>
+                        <TableCell align="center">{bankData.bankCity}</TableCell>
+                        <TableCell align="center">{bankData.bankDistrict}</TableCell>
+                        <TableCell align="center">{bankData.bankState}</TableCell>
                       </TableRow>
                     );
                   })}
@@ -436,6 +440,7 @@ else {
             </Table>
           </TableContainer>
           <TablePagination
+            showFirstButton={true}
             rowsPerPageOptions={[5, 10, 25]}
             component="div"
             count={bankData.length}
@@ -445,10 +450,6 @@ else {
             onChangeRowsPerPage={handleChangeRowsPerPage}
           />
         </Paper>
-        <FormControlLabel
-          control={<Switch checked={dense} onChange={() => {console.log('Density changed!')}} />}
-          label="Dense padding"
-        />
       </div>
       </Page>
   )   
