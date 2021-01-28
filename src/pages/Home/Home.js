@@ -3,6 +3,7 @@ import React, {useEffect, useState, useCallback, useMemo} from 'react'
 import Scrollbar from 'material-ui-shell/lib/components/Scrollbar/Scrollbar'
 import { useIntl } from 'react-intl'
 import config from '../../config/config'
+import List from '@material-ui/core/List'
 import { ListPage } from 'material-ui-shell/lib/containers/Page'
 import ListItem from '@material-ui/core/ListItem'
 import ListItemText from '@material-ui/core/ListItemText'
@@ -20,6 +21,7 @@ import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TablePagination from '@material-ui/core/TablePagination';
+import TableFooter from '@material-ui/core/TableFooter';
 import TableRow from '@material-ui/core/TableRow';
 import TableSortLabel from '@material-ui/core/TableSortLabel';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -31,45 +33,6 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
 import DeleteIcon from '@material-ui/icons/Delete';
 import FilterListIcon from '@material-ui/icons/FilterList';
-
-const Row = ({ index, style, data }) => {
-  const { name, id } = data
-
-  return (
-    <div key={`${name}`} style={style}>
-      <ListItem alignItems="flex-start">
-        <ListItemText
-          primary={`${name}`}
-          secondary={
-            <React.Fragment>
-              <Typography
-                component="span"
-                variant="body2"
-                color="textSecondary">
-                {id}
-              </Typography>
-              <br />
-              <Typography
-                component="span"
-                variant="body2"
-                color="textSecondary">
-                {`${id} ${id}`}
-              </Typography>
-              <br />
-              <Typography
-                component="span"
-                variant="body2"
-                color="textSecondary">
-                  {`User is active: ${id}`}
-                </Typography>
-            </React.Fragment>
-          }
-        />
-      </ListItem>
-      <Divider />
-    </div>
-  )
-}
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -98,13 +61,13 @@ function stableSort(array, comparator) {
 }
 
 const headCells = [
-  { id: 'ifsc', numeric: false, disablePadding: false, label: 'IFSC' },
-  { id: 'bank_id', numeric: true, disablePadding: false, label: 'Bank ID' },
-  { id: 'branch', numeric: false, disablePadding: false, label: 'Branch' },
-  { id: 'address', numeric: false, disablePadding: false, label: 'Address' },
-  { id: 'city', numeric: false, disablePadding: false, label: 'City' },
-  { id: 'district', numeric: false, disablePadding: false, label: 'District' },
-  { id: 'state', numeric: false, disablePadding: false, label: 'State' },
+  { id: 'ifsc', numeric: false, disablePadding: true, label: 'IFSC' },
+  { id: 'bank_id', numeric: true, disablePadding: true, label: 'Bank ID' },
+  { id: 'branch', numeric: false, disablePadding: true, label: 'Branch' },
+  { id: 'address', numeric: false, disablePadding: true, label: 'Address' },
+  { id: 'city', numeric: false, disablePadding: true, label: 'City' },
+  { id: 'district', numeric: false, disablePadding: true, label: 'District' },
+  { id: 'state', numeric: false, disablePadding: true, label: 'State' },
 ];
 
 function EnhancedTableHead(props) {
@@ -116,19 +79,26 @@ function EnhancedTableHead(props) {
   return (
     <TableHead>
       <TableRow>
-        <TableCell padding="checkbox">
+      <Grid
+          colSpan={7}
+          container
+          direction="row"
+          justify="flex-start"
+          alignItems="center"
+          spacing={2}>
+        {/* <TableCell colSpan={1} padding="checkbox">
           <Checkbox
             indeterminate={numSelected > 0 && numSelected < rowCount}
             checked={rowCount > 0 && numSelected === rowCount}
             onChange={onSelectAllClick}
             inputProps={{ 'aria-label': 'select all desserts' }}
           />
-        </TableCell>
+        </TableCell> */}
         {headCells.map((headCell) => (
+          <Grid xs={1}>
           <TableCell
             key={headCell.id}
             align='center'
-            padding={headCell.disablePadding ? 'none' : 'default'}
             sortDirection={orderBy === headCell.id ? order : false}
           >
             <TableSortLabel
@@ -144,7 +114,9 @@ function EnhancedTableHead(props) {
               ) : null}
             </TableSortLabel>
           </TableCell>
+          </Grid>
         ))}
+        </Grid>
       </TableRow>
     </TableHead>
   );
@@ -190,7 +162,8 @@ const EnhancedTableToolbar = (props) => {
         [classes.highlight]: numSelected > 0,
       })}
     >
-      {numSelected > 0 ? (
+      
+      {/* {numSelected > 0 ? (
         <Typography className={classes.title} color="inherit" variant="subtitle1" component="div">
           {numSelected} selected
         </Typography>
@@ -198,20 +171,28 @@ const EnhancedTableToolbar = (props) => {
         <Typography className={classes.title} variant="h6" id="tableTitle" component="div">
           Branches
         </Typography>
-      )}
+      )}*/}
 
       {numSelected > 0 ? (
-        <Tooltip title="Delete">
+        <Grid container justify="flex-end">
+        <Grid item>
+        <Tooltip placement="top-end" title="Delete">
           <IconButton aria-label="delete">
             <DeleteIcon />
           </IconButton>
         </Tooltip>
+        </Grid>
+        </Grid>
       ) : (
-        <Tooltip title="Filter list">
+        <Grid container justify="flex-end">
+          <Grid item>
+        <Tooltip placement="top-end" title="Filter list">
           <IconButton aria-label="filter list">
             <FilterListIcon />
           </IconButton>
         </Tooltip>
+        </Grid>
+        </Grid>
       )}
     </Toolbar>
   );
@@ -231,6 +212,14 @@ const useStyles = makeStyles((theme) => ({
   },
   table: {
     minWidth: 750,
+  },
+  header: {
+    position: 'fixed',
+    top: 0,
+  },
+  footer: {
+    position: 'fixed',
+    bottom: 0,
   },
   visuallyHidden: {
     border: 0,
@@ -253,7 +242,7 @@ const [loading, setLoading] = useState(true);
 
 const classes = useStyles();
 const [order, setOrder] = React.useState('asc');
-const [orderBy, setOrderBy] = React.useState('ifsc');
+const [orderBy, setOrderBy] = React.useState('bankIFSC');
 const [selected, setSelected] = React.useState([]);
 const [page, setPage] = React.useState(0);
 const [dense, setDense] = React.useState(false);
@@ -269,7 +258,7 @@ const fetchApiData = useCallback(() => {
 
   const params = {
     page: 0,
-    items: 10
+    items: 30
   };  
 
   console.log('fetch api data called')
@@ -331,14 +320,6 @@ useEffect(() => {
   fetchApiData();
   console.log('use effect called');
 }, []);
-  /*
-  return (
-    <Page pageTitle={intl.formatMessage({ id: 'bank_branches' })}>
-      <Scrollbar style={{ height: '100%', width: '100%', display: 'flex', flex: 1 }}>
-        {config.server.banksUrl}
-      </Scrollbar>
-    </Page>
-  )*/
 
 if (loading) {
   return (
@@ -358,37 +339,19 @@ if (loading) {
 }
 else {
   return (
-    // <ListPage
-    //   name="list_demo"
-    //   list={bankData}
-    //   // fields={fields}
-    //   onClick={() => alert('Hi, you have clicked an item!')}
-    //   Row={Row}
-    //   listProps={{ itemSize: 110 }}
-    //   getPageProps={(list) => {
-    //     return {
-    //       pageTitle: intl.formatMessage(
-    //         {
-    //           id: 'bank_branches',
-    //         },
-    //         { count: list.length }
-    //       ),
-    //     }
-    //   }}
-    // />
-    <Page pageTitle={intl.formatMessage({ id: 'bank_branches', defaultMessage: 'Bank Branches' })}>
-      <div className={classes.root}>
-        <Paper className={classes.paper}>
-          <EnhancedTableToolbar numSelected={selected.length} />
+    <Page 
+    pageTitle={intl.formatMessage({ id: 'bank_branches', defaultMessage: 'Bank Branches' })} 
+    contentStyle={{ overflow: 'hidden' }}>
+        <Paper className={classes.root}>
+          <EnhancedTableToolbar
+          numSelected={selected.length} />
           <TableContainer>
             <Table
               className={classes.table}
               aria-labelledby="tableTitle"
               size={dense ? 'small' : 'medium'}
-              aria-label="enhanced table"
-            >
+              aria-label="enhanced table">
               <EnhancedTableHead
-                classes={classes}
                 numSelected={selected.length}
                 order={order}
                 orderBy={orderBy}
@@ -396,13 +359,15 @@ else {
                 onRequestSort={handleRequestSort}
                 rowCount={bankData.length}
               />
+              </Table>
+        <Table>
+        <div style={{ overflow: "auto", height: '100vh', width: 'auto'}} >
               <TableBody>
                 {stableSort(bankData, getComparator(order, orderBy))
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((bankData, index) => {
                     const isItemSelected = isSelected(bankData.ifsc);
                     const labelId = `enhanced-table-checkbox-${index}`;
-  
                     return (
                       <TableRow
                         hover
@@ -413,13 +378,13 @@ else {
                         key={bankData.ifsc}
                         selected={isItemSelected}
                       >
-                        <TableCell padding="checkbox">
+                        {/* <TableCell padding="checkbox">
                           <Checkbox
                             checked={isItemSelected}
                             inputProps={{ 'aria-labelledby': labelId }}
                           />
-                        </TableCell>
-                        <TableCell component="th" id={labelId} scope="row" padding="none">
+                        </TableCell> */}
+                        <TableCell component="th" id={labelId} scope="row" padding="default">
                           {bankData.bankIFSC}
                         </TableCell>
                         <TableCell align="center">{bankData.bankId}</TableCell>
@@ -431,28 +396,35 @@ else {
                       </TableRow>
                     );
                   })}
+                  {emptyRows === 0 &&(
+                  <TableRow style={{ height: (dense ? 33 : 53) * 5 }}>
+                  <TableCell colSpan={8} />
+                </TableRow>  
+                  )}
                 {emptyRows > 0 && (
                   <TableRow style={{ height: (dense ? 33 : 53) * emptyRows }}>
-                    <TableCell colSpan={6} />
+                    <TableCell colSpan={8} />
                   </TableRow>
                 )}
               </TableBody>
-            </Table>
-          </TableContainer>
+              </div>
+              <TableFooter>
           <TablePagination
+          className={classes.footer}
             showFirstButton={true}
             rowsPerPageOptions={[5, 10, 25]}
-            component="div"
             count={bankData.length}
+            component="div"
             rowsPerPage={rowsPerPage}
             page={page}
             onChangePage={handleChangePage}
             onChangeRowsPerPage={handleChangeRowsPerPage}
           />
+          </TableFooter>
+            </Table>
+          </TableContainer>
         </Paper>
-      </div>
       </Page>
   )   
 }
 }
-//export default HomePage

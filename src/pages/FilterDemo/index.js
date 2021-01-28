@@ -16,6 +16,7 @@ import { FixedSizeList } from 'react-window'
 import { Scrollbars } from 'react-custom-scrollbars'
 import { useFilter } from 'material-ui-shell/lib/providers/Filter'
 import { useIntl } from 'react-intl'
+import { Table } from 'react-virtualized'
 
 const filterName = 'test_filter'
 
