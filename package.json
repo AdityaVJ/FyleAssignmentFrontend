@@ -5,6 +5,7 @@
   "dependencies": {
     "@formatjs/intl-relativetimeformat": "7.x",
     "@material-ui/core": "4.x",
+    "@material-ui/data-grid": "^4.0.0-alpha.18",
     "@material-ui/icons": "4.x",
     "axios": "^0.21.1",
     "base-shell": "1.x",

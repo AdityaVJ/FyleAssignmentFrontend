@@ -9,6 +9,7 @@ import ListItem from '@material-ui/core/ListItem'
 import ListItemText from '@material-ui/core/ListItemText'
 import Typography from '@material-ui/core/Typography'
 import Divider from '@material-ui/core/Divider'
+import { DataGrid } from '@material-ui/data-grid';
 import CircularProgress from '@material-ui/core/CircularProgress'
 import axios from 'axios'
 import Grid from "@material-ui/core/Grid";
@@ -34,173 +35,15 @@ import Switch from '@material-ui/core/Switch';
 import DeleteIcon from '@material-ui/icons/Delete';
 import FilterListIcon from '@material-ui/icons/FilterList';
 
-function descendingComparator(a, b, orderBy) {
-  if (b[orderBy] < a[orderBy]) {
-    return -1;
-  }
-  if (b[orderBy] > a[orderBy]) {
-    return 1;
-  }
-  return 0;
-}
-
-function getComparator(order, orderBy) {
-  return order === 'desc'
-    ? (a, b) => descendingComparator(a, b, orderBy)
-    : (a, b) => -descendingComparator(a, b, orderBy);
-}
-
-function stableSort(array, comparator) {
-  const stabilizedThis = array.map((el, index) => [el, index]);
-  stabilizedThis.sort((a, b) => {
-    const order = comparator(a[0], b[0]);
-    if (order !== 0) return order;
-    return a[1] - b[1];
-  });
-  return stabilizedThis.map((el) => el[0]);
-}
-
 const headCells = [
-  { id: 'ifsc', numeric: false, disablePadding: true, label: 'IFSC' },
-  { id: 'bank_id', numeric: true, disablePadding: true, label: 'Bank ID' },
-  { id: 'branch', numeric: false, disablePadding: true, label: 'Branch' },
-  { id: 'address', numeric: false, disablePadding: true, label: 'Address' },
-  { id: 'city', numeric: false, disablePadding: true, label: 'City' },
-  { id: 'district', numeric: false, disablePadding: true, label: 'District' },
-  { id: 'state', numeric: false, disablePadding: true, label: 'State' },
+  { field: 'bankIFSC', width: 150, headerName: 'IFSC' },
+  { field: 'bankId', type: 'number', width: 150, headerName: 'Bank ID' },
+  { field: 'bankBranch', type: 'text', width: 150, headerName: 'Branch' },
+  { field: 'bankAddress', width: 250, headerName: 'Address' },
+  { field: 'bankCity', type: 'text', width: 160, headerName: 'City' },
+  { field: 'bankDistrict', type: 'text', width: 150, headerName: 'District' },
+  { field: 'bankState', type: 'text', width: 150, headerName: 'State' },
 ];
-
-function EnhancedTableHead(props) {
-  const { classes, onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } = props;
-  const createSortHandler = (property) => (event) => {
-    onRequestSort(event, property);
-  };
-
-  return (
-    <TableHead>
-      <TableRow>
-      <Grid
-          colSpan={7}
-          container
-          direction="row"
-          justify="flex-start"
-          alignItems="center"
-          spacing={2}>
-        {/* <TableCell colSpan={1} padding="checkbox">
-          <Checkbox
-            indeterminate={numSelected > 0 && numSelected < rowCount}
-            checked={rowCount > 0 && numSelected === rowCount}
-            onChange={onSelectAllClick}
-            inputProps={{ 'aria-label': 'select all desserts' }}
-          />
-        </TableCell> */}
-        {headCells.map((headCell) => (
-          <Grid xs={1}>
-          <TableCell
-            key={headCell.id}
-            align='center'
-            sortDirection={orderBy === headCell.id ? order : false}
-          >
-            <TableSortLabel
-              active={orderBy === headCell.id}
-              direction={orderBy === headCell.id ? order : 'asc'}
-              onClick={createSortHandler(headCell.id)}
-            >
-              {headCell.label}
-              {orderBy === headCell.id ? (
-                <span className={classes.visuallyHidden}>
-                  {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
-                </span>
-              ) : null}
-            </TableSortLabel>
-          </TableCell>
-          </Grid>
-        ))}
-        </Grid>
-      </TableRow>
-    </TableHead>
-  );
-}
-
-EnhancedTableHead.propTypes = {
-  classes: PropTypes.object.isRequired,
-  numSelected: PropTypes.number.isRequired,
-  onRequestSort: PropTypes.func.isRequired,
-  onSelectAllClick: PropTypes.func.isRequired,
-  order: PropTypes.oneOf(['asc', 'desc']).isRequired,
-  orderBy: PropTypes.string.isRequired,
-  rowCount: PropTypes.number.isRequired,
-};
-
-const useToolbarStyles = makeStyles((theme) => ({
-  root: {
-    paddingLeft: theme.spacing(2),
-    paddingRight: theme.spacing(1),
-  },
-  highlight:
-    theme.palette.type === config.theme.defaultType
-      ? {
-          color: theme.palette.secondary.main,
-          backgroundColor: lighten(theme.palette.secondary.light, 0.85),
-        }
-      : {
-          color: theme.palette.text.primary,
-          backgroundColor: theme.palette.secondary.dark,
-        },
-  title: {
-    flex: '1 1 100%',
-  },
-}));
-
-const EnhancedTableToolbar = (props) => {
-  const classes = useToolbarStyles();
-  const { numSelected } = props;
-
-  return (
-    <Toolbar
-      className={clsx(classes.root, {
-        [classes.highlight]: numSelected > 0,
-      })}
-    >
-      
-      {/* {numSelected > 0 ? (
-        <Typography className={classes.title} color="inherit" variant="subtitle1" component="div">
-          {numSelected} selected
-        </Typography>
-      ) : (
-        <Typography className={classes.title} variant="h6" id="tableTitle" component="div">
-          Branches
-        </Typography>
-      )}*/}
-
-      {numSelected > 0 ? (
-        <Grid container justify="flex-end">
-        <Grid item>
-        <Tooltip placement="top-end" title="Delete">
-          <IconButton aria-label="delete">
-            <DeleteIcon />
-          </IconButton>
-        </Tooltip>
-        </Grid>
-        </Grid>
-      ) : (
-        <Grid container justify="flex-end">
-          <Grid item>
-        <Tooltip placement="top-end" title="Filter list">
-          <IconButton aria-label="filter list">
-            <FilterListIcon />
-          </IconButton>
-        </Tooltip>
-        </Grid>
-        </Grid>
-      )}
-    </Toolbar>
-  );
-};
-
-EnhancedTableToolbar.propTypes = {
-  numSelected: PropTypes.number.isRequired,
-};
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -266,55 +109,20 @@ const fetchApiData = useCallback(() => {
     console.log('axios get called')
     if (response.status === 200) {
       let data = response.data;
-      setBankData(data);
+      
+      let idData = data.map(function(el, index) {
+        var obj = Object.assign({}, el);
+        obj.id = index;
+        return obj
+      })
+
+      setBankData(idData);
       setLoading(false);
     }
   }, (error) => {
     console.log(error);
   })
 });
-
-const handleSelectAllClick = (event) => {
-  if (event.target.checked) {
-    const newSelecteds = bankData.map((n) => n.ifsc);
-    setSelected(newSelecteds);
-    return;
-  }
-  setSelected([]);
-};
-
-const handleClick = (event, name) => {
-  const selectedIndex = selected.indexOf(name);
-  let newSelected = [];
-
-  if (selectedIndex === -1) {
-    newSelected = newSelected.concat(selected, name);
-  } else if (selectedIndex === 0) {
-    newSelected = newSelected.concat(selected.slice(1));
-  } else if (selectedIndex === selected.length - 1) {
-    newSelected = newSelected.concat(selected.slice(0, -1));
-  } else if (selectedIndex > 0) {
-    newSelected = newSelected.concat(
-      selected.slice(0, selectedIndex),
-      selected.slice(selectedIndex + 1),
-    );
-  }
-
-  setSelected(newSelected);
-};
-
-const handleChangePage = (event, newPage) => {
-  setPage(newPage);
-};
-
-const handleChangeRowsPerPage = (event) => {
-  setRowsPerPage(parseInt(event.target.value, 10));
-  setPage(0);
-};
-
-const isSelected = (name) => selected.indexOf(name) !== -1;
-const emptyRows = rowsPerPage - Math.min(rowsPerPage, bankData.length - page * rowsPerPage);
-
 
 useEffect(() => {
   fetchApiData();
@@ -342,88 +150,13 @@ else {
     <Page 
     pageTitle={intl.formatMessage({ id: 'bank_branches', defaultMessage: 'Bank Branches' })} 
     contentStyle={{ overflow: 'hidden' }}>
-        <Paper className={classes.root}>
-          <EnhancedTableToolbar
-          numSelected={selected.length} />
-          <TableContainer>
-            <Table
-              className={classes.table}
-              aria-labelledby="tableTitle"
-              size={dense ? 'small' : 'medium'}
-              aria-label="enhanced table">
-              <EnhancedTableHead
-                numSelected={selected.length}
-                order={order}
-                orderBy={orderBy}
-                onSelectAllClick={handleSelectAllClick}
-                onRequestSort={handleRequestSort}
-                rowCount={bankData.length}
-              />
-              </Table>
-        <Table>
-        <div style={{ overflow: "auto", height: '100vh', width: 'auto'}} >
-              <TableBody>
-                {stableSort(bankData, getComparator(order, orderBy))
-                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                  .map((bankData, index) => {
-                    const isItemSelected = isSelected(bankData.ifsc);
-                    const labelId = `enhanced-table-checkbox-${index}`;
-                    return (
-                      <TableRow
-                        hover
-                        onClick={(event) => handleClick(event, bankData.ifsc)}
-                        role="checkbox"
-                        aria-checked={isItemSelected}
-                        tabIndex={-1}
-                        key={bankData.ifsc}
-                        selected={isItemSelected}
-                      >
-                        {/* <TableCell padding="checkbox">
-                          <Checkbox
-                            checked={isItemSelected}
-                            inputProps={{ 'aria-labelledby': labelId }}
-                          />
-                        </TableCell> */}
-                        <TableCell component="th" id={labelId} scope="row" padding="default">
-                          {bankData.bankIFSC}
-                        </TableCell>
-                        <TableCell align="center">{bankData.bankId}</TableCell>
-                        <TableCell align="center">{bankData.bankBranch}</TableCell>
-                        <TableCell align="center">{bankData.bankAddress}</TableCell>
-                        <TableCell align="center">{bankData.bankCity}</TableCell>
-                        <TableCell align="center">{bankData.bankDistrict}</TableCell>
-                        <TableCell align="center">{bankData.bankState}</TableCell>
-                      </TableRow>
-                    );
-                  })}
-                  {emptyRows === 0 &&(
-                  <TableRow style={{ height: (dense ? 33 : 53) * 5 }}>
-                  <TableCell colSpan={8} />
-                </TableRow>  
-                  )}
-                {emptyRows > 0 && (
-                  <TableRow style={{ height: (dense ? 33 : 53) * emptyRows }}>
-                    <TableCell colSpan={8} />
-                  </TableRow>
-                )}
-              </TableBody>
-              </div>
-              <TableFooter>
-          <TablePagination
-          className={classes.footer}
-            showFirstButton={true}
-            rowsPerPageOptions={[5, 10, 25]}
-            count={bankData.length}
-            component="div"
-            rowsPerPage={rowsPerPage}
-            page={page}
-            onChangePage={handleChangePage}
-            onChangeRowsPerPage={handleChangeRowsPerPage}
-          />
-          </TableFooter>
-            </Table>
-          </TableContainer>
-        </Paper>
+      <DataGrid 
+      rows={bankData}
+      autoPageSize={true}
+      showToolbar={true}
+      rowHeight={100}
+      headerHeight={50}
+      columns={headCells} />
       </Page>
   )   
 }
