@@ -47,19 +47,9 @@ const handlePageChange = (params) => {
   console.log(`paramsPage: ${params.page}`)
 
   setPage(params.page);
-  // fetchApiData(params.page);
-  checkPagination(params)
-};
-
-const checkPagination = (params) => {
-
-  setPerPage(params.pageSize);
-  console.log(`Equals check: ${params.pageSize} ${perPage}`)
   fetchApiData();
-
-  console.log(`paramsPageKeys: ${Object.keys(params)}`)
-  console.log(`paramsPageValues: ${Object.values(params)}`)
-}
+  //checkPagination(params)
+};
 
 const fetchApiData = useCallback(() => {
 
@@ -125,7 +115,6 @@ else {
       rowsPerPage={perPage}
       rowsPerPageOptions={[25, 50, 100]}
       paginationMode="server"
-      onPageSizeChange={(params) => {checkPagination(params)}}
       onPageChange={(params) => {handlePageChange(params)}}
       headerHeight={50}
       columns={headCells} />
