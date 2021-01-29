@@ -3,12 +3,10 @@ import locales from './locales'
 import routes from './routes'
 import getMenuItems from './menuItems'
 import themes from './themes'
+import Home from '../pages/Home/Home'
 import parseLanguages from 'base-shell/lib/utils/locale'
 
 const config = {
-  auth: {
-    signInURL: '/signin',
-  },
   server: {
     url: 'http://localhost:8080/api',
     get banksUrl() {return `${this.url}/bank`},

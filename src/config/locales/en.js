@@ -18,9 +18,6 @@ const messages = defineMessages({
   red: 'Red',
   green: 'Green',
   language: 'Language',
-  en: 'English',
-  de: 'German',
-  ru: 'Russian',
   menu: 'Menu',
   menu_mini_mode: 'Mini menu',
   offline: 'Offline',
@@ -35,15 +32,6 @@ const messages = defineMessages({
   toast_demo:'Demo toast',
   filter_demo:'Demo filter',
   list_page_demo:'List Page demo with {count} rows',
-  forgot_password:'Forgot password',
-  password_reset:'Password reset',
-  password_confirm:'Password confirm',
-  registration:'Registration',
-  my_account: 'My account',
-  delete_account_dialog_title: 'Delete Account?',
-  delete_account_dialog_message:
-    'Your account will be deleted and you will lose all your data!',
-  delete_account_dialog_action:'Delete account'
 })
 
 export default messages

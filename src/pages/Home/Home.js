@@ -1,6 +1,5 @@
 import Page from 'material-ui-shell/lib/containers/Page'
 import React, {useEffect, useState, useCallback, useMemo} from 'react'
-import { useIntl } from 'react-intl'
 import config from '../../config/config'
 import { DataGrid } from '@material-ui/data-grid';
 import CircularProgress from '@material-ui/core/CircularProgress'
@@ -14,7 +13,6 @@ import Alert from '@material-ui/lab/Alert';
 
 export default function HomePage() {
 
-const intl = useIntl()
 const [bankData, setBankData] = useState([])
 const [loading, setLoading] = useState(true);
 const [tableLoading, setTableLoading] = useState(false);
@@ -117,7 +115,7 @@ useEffect(() => {
 
 if (loading) {
   return (
-    <Page pageTitle={intl.formatMessage({ id: 'bank_branches' })}>
+    <Page pageTitle={'Bank Branches'}>
       <Grid
       container
       align="center"
@@ -134,7 +132,7 @@ if (loading) {
 else {
   return (
     <Page 
-    pageTitle={intl.formatMessage({ id: 'bank_branches', defaultMessage: 'Bank Branches' })} 
+    pageTitle={'Bank Branches'}
     contentStyle={{ overflow: 'hidden' }}>
       <DataGrid
       disableSelectionOnClick={true}

@@ -40,7 +40,7 @@ const getMenuItems = (props) => {
   const { auth, setAuth } = authData
   const { isAppInstallable, isAppInstalled, deferredPrompt } = a2HSContext
 
-  const isAuthorised = auth.isAuthenticated
+  // const isAuthorised = auth.isAuthenticated
 
   const themeItems = allThemes.map((t) => {
     return {
@@ -54,35 +54,10 @@ const getMenuItems = (props) => {
     }
   })
 
-  if (isAuthMenuOpen || !isAuthorised) {
-    return [
-      {
-        value: '/my_account',
-        primaryText: intl.formatMessage({
-          id: 'my_account',
-          defaultMessage: 'My Account',
-        }),
-        leftIcon: <AccountBoxIcon />,
-      },
-      {
-        value: '/signin',
-        onClick: isAuthorised
-          ? () => {
-              setAuth({ isAuthenticated: false })
-            }
-          : () => {},
-        visible: true,
-        primaryText: isAuthorised
-          ? intl.formatMessage({ id: 'sign_out' })
-          : intl.formatMessage({ id: 'sign_in' }),
-        leftIcon: isAuthorised ? <ExitToAppIcon /> : <LockIcon />,
-      },
-    ]
-  }
   return [
     {
       value: '/home',
-      visible: isAuthorised,
+      visible: true,
       primaryText: intl.formatMessage({ id: 'home' }),
       leftIcon: <DashboardIcon />,
     },
@@ -93,25 +68,16 @@ const getMenuItems = (props) => {
       nestedItems: [
         {
           value: '/dialog_demo',
-          visible: isAuthorised,
+          visible: true,
           primaryText: intl.formatMessage({
             id: 'dialog_demo',
             defaultMessage: 'Dialog',
           }),
           leftIcon: <ChatBubble />,
         },
-        // {
-        //   value: '/toast_demo',
-        //   visible: isAuthorised,
-        //   primaryText: intl.formatMessage({
-        //     id: 'toast_demo',
-        //     defaultMessage: 'Toast',
-        //   }),
-        //   leftIcon: <QuestionAnswer />,
-        // },
         {
           value: '/filter_demo',
-          visible: isAuthorised,
+          visible: true,
           primaryText: intl.formatMessage({
             id: 'filter_demo',
             defaultMessage: 'Filter',
@@ -120,7 +86,7 @@ const getMenuItems = (props) => {
         },
         {
           value: '/list_page_demo',
-          visible: isAuthorised,
+          visible: true,
           primaryText: intl.formatMessage({
             id: 'list_page_demo_menu',
             defaultMessage: 'List Page',
@@ -129,7 +95,7 @@ const getMenuItems = (props) => {
         },
         {
           value: '/tabs_demo',
-          visible: isAuthorised,
+          visible: true,
           primaryText: intl.formatMessage({
             id: 'tabs_demo',
             defaultMessage: 'Tabs Page',
