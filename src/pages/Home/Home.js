@@ -15,6 +15,7 @@ export default function HomePage() {
 const intl = useIntl()
 const [bankData, setBankData] = useState([])
 const [loading, setLoading] = useState(true);
+const [tableLoading, setTableLoading] = useState(false);
 const [page, setPage] = React.useState(1);
 const [totalCount, setTotalCount] = React.useState(0);
 
@@ -43,6 +44,7 @@ const headCells = [
 ];
 
 const handlePageChange = (params) => {
+  setTableLoading(true);
   setPage(params.page);
   fetchApiData();
 };
@@ -70,6 +72,10 @@ const fetchApiData = useCallback(() => {
   };  
 
   axios.get(`${config.server.branchURL}/`, {params}).then((response) => {
+
+    setTableLoading(false);
+    setLoading(false);
+
     if (response.status === 200) {
       let data = response.data;
       let branches = data.branches;
@@ -82,9 +88,12 @@ const fetchApiData = useCallback(() => {
         return obj
       })
       setBankData(idData);
-      setLoading(false);
     }
   }, (error) => {
+    
+    setTableLoading(false);
+    setLoading(false);
+
     console.log(error);
   })
 });
@@ -119,7 +128,7 @@ else {
       rows={bankData}
       showToolbar={true}
       rowHeight={100}
-      rowCount={bankData.length}
+      loading={tableLoading}
       page={page}
       rowCount={totalCount}
       rowsPerPageOptions={[25, 50, 100]}
