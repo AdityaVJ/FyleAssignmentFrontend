@@ -10,19 +10,28 @@ import StarIcon from '@material-ui/icons/Star';
 import Grid from "@material-ui/core/Grid";
 import IconButton from '@material-ui/core/IconButton';
 
+export default function HomePage() {
+
+const intl = useIntl()
+const [bankData, setBankData] = useState([])
+const [loading, setLoading] = useState(true);
+const [page, setPage] = React.useState(1);
+const [totalCount, setTotalCount] = React.useState(0);
+
 const headCells = [
   {
     field: 'favourites',
     headerName: 'Favourite',
     width: 150,
-    renderCell: (params) => (
+    renderCell: (params) => {
+    return (
       <div>
-        {/* {console.log(`Render params: ${Object.keys(params)}`)}  */}
         <IconButton color="primary" aria-label="add to favourites" component="span">
-          <StarBorderIcon />
+          {checkFavouriteItem(params.row.bankIFSC) ? (<StarIcon />): (<StarBorderIcon />)}
         </IconButton>
         </div>
     )
+  }
   },
   { field: 'bankIFSC', width: 150, headerName: 'IFSC' },
   { field: 'bankId', type: 'number', width: 150, headerName: 'Bank ID' },
@@ -33,23 +42,25 @@ const headCells = [
   { field: 'bankState', type: 'text', width: 150, headerName: 'State' },
 ];
 
-export default function HomePage() {
-
-const intl = useIntl()
-const [bankData, setBankData] = useState([])
-const [loading, setLoading] = useState(true);
-const [page, setPage] = React.useState(1);
-const [totalCount, setTotalCount] = React.useState(0);
-const [perPage, setPerPage] = React.useState(100);
-const [serverSidePage, setServerSidePage] = React.useState(0);
-
 const handlePageChange = (params) => {
-  console.log(`paramsPage: ${params.page}`)
-
   setPage(params.page);
   fetchApiData();
-  //checkPagination(params)
 };
+
+const checkFavouriteItem = (itemID) => {
+  const item = localStorage.getItem(itemID);
+  if (!item) return false
+  else return true
+}
+
+const markAsFavourite = useCallback((params) => {
+  const ifsc = params.row.bankIFSC;
+
+  if(!checkFavouriteItem(ifsc))
+    localStorage.setItem(ifsc, ifsc);
+  else localStorage.removeItem(ifsc);
+  setLoading(false);
+});
 
 const fetchApiData = useCallback(() => {
 
@@ -58,7 +69,6 @@ const fetchApiData = useCallback(() => {
     items: 100
   };  
 
-  console.log(`Params: ${params.items} ${params.page}`)
   axios.get(`${config.server.branchURL}/`, {params}).then((response) => {
     if (response.status === 200) {
       let data = response.data;
@@ -112,9 +122,9 @@ else {
       rowCount={bankData.length}
       page={page}
       rowCount={totalCount}
-      rowsPerPage={perPage}
       rowsPerPageOptions={[25, 50, 100]}
       paginationMode="server"
+      onRowClick={(params) => {markAsFavourite(params)}}
       onPageChange={(params) => {handlePageChange(params)}}
       headerHeight={50}
       columns={headCells} />
