@@ -21,7 +21,6 @@ import {
   Web,
 } from '@material-ui/icons'
 
-import allLocales from './locales'
 import allThemes from './themes'
 
 const getMenuItems = (props) => {
@@ -35,26 +34,11 @@ const getMenuItems = (props) => {
     auth: authData,
   } = props
   const {
-    isDesktop,
     isAuthMenuOpen,
-    setMiniSwitchVisibility,
-    isMiniSwitchVisibility,
   } = menuContext
   const { themeID, setThemeID, isRTL, toggleThis } = themeContext
   const { auth, setAuth } = authData
   const { isAppInstallable, isAppInstalled, deferredPrompt } = a2HSContext
-
-  const localeItems = allLocales.map((l) => {
-    return {
-      value: undefined,
-      visible: true,
-      primaryText: intl.formatMessage({ id: l.locale }),
-      onClick: () => {
-        updateLocale(l.locale)
-      },
-      leftIcon: <LanguageIcon />,
-    }
-  })
 
   const isAuthorised = auth.isAuthenticated
 
@@ -116,15 +100,15 @@ const getMenuItems = (props) => {
           }),
           leftIcon: <ChatBubble />,
         },
-        {
-          value: '/toast_demo',
-          visible: isAuthorised,
-          primaryText: intl.formatMessage({
-            id: 'toast_demo',
-            defaultMessage: 'Toast',
-          }),
-          leftIcon: <QuestionAnswer />,
-        },
+        // {
+        //   value: '/toast_demo',
+        //   visible: isAuthorised,
+        //   primaryText: intl.formatMessage({
+        //     id: 'toast_demo',
+        //     defaultMessage: 'Toast',
+        //   }),
+        //   leftIcon: <QuestionAnswer />,
+        // },
         {
           value: '/filter_demo',
           visible: isAuthorised,
@@ -154,12 +138,6 @@ const getMenuItems = (props) => {
         },
       ],
     },
-    {
-      value: '/about',
-      visible: true,
-      primaryText: intl.formatMessage({ id: 'about' }),
-      leftIcon: <InfoOutlined />,
-    },
     { divider: true },
     {
       primaryText: intl.formatMessage({ id: 'settings' }),
@@ -172,27 +150,6 @@ const getMenuItems = (props) => {
           primaryTogglesNestedList: true,
           leftIcon: <StyleIcon />,
           nestedItems: themeItems,
-        },
-        {
-          primaryText: intl.formatMessage({ id: 'language' }),
-          secondaryText: intl.formatMessage({ id: locale }),
-          primaryTogglesNestedList: true,
-          leftIcon: <LanguageIcon />,
-          nestedItems: localeItems,
-        },
-        {
-          visible: isDesktop ? true : false,
-          onClick: () => {
-            setMiniSwitchVisibility(!isMiniSwitchVisibility)
-          },
-          primaryText: intl.formatMessage({
-            id: 'menu_mini_mode',
-          }),
-          leftIcon: isMiniSwitchVisibility ? (
-            <MenuOpenIcon />
-          ) : (
-            <ChromeReaderMode />
-          ),
         },
         {
           visible: true,

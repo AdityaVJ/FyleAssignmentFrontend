@@ -9,6 +9,8 @@ import StarBorderIcon from '@material-ui/icons/StarBorder';
 import StarIcon from '@material-ui/icons/Star';
 import Grid from "@material-ui/core/Grid";
 import IconButton from '@material-ui/core/IconButton';
+import Snackbar from '@material-ui/core/Snackbar';
+import Alert from '@material-ui/lab/Alert';
 
 export default function HomePage() {
 
@@ -16,7 +18,9 @@ const intl = useIntl()
 const [bankData, setBankData] = useState([])
 const [loading, setLoading] = useState(true);
 const [tableLoading, setTableLoading] = useState(false);
+const [open, setOpen] = useState(false);
 const [page, setPage] = React.useState(1);
+const [message, setMessage] = React.useState('');
 const [totalCount, setTotalCount] = React.useState(0);
 
 const headCells = [
@@ -43,6 +47,10 @@ const headCells = [
   { field: 'bankState', type: 'text', width: 150, headerName: 'State' },
 ];
 
+const handleClose = () => {
+  setOpen(false);
+}
+
 const handlePageChange = (params) => {
   setTableLoading(true);
   setPage(params.page);
@@ -57,11 +65,16 @@ const checkFavouriteItem = (itemID) => {
 
 const markAsFavourite = useCallback((params) => {
   const ifsc = params.row.bankIFSC;
-
-  if(!checkFavouriteItem(ifsc))
+  if(!checkFavouriteItem(ifsc)) {
+    setMessage(`${ifsc} successfully added to favourites!`)
     localStorage.setItem(ifsc, ifsc);
-  else localStorage.removeItem(ifsc);
-  setLoading(false);
+    setOpen(true);
+  }
+  else {
+    setMessage(`${ifsc} removed from favourites!`)
+    localStorage.removeItem(ifsc);
+    setOpen(true);
+  }
 });
 
 const fetchApiData = useCallback(() => {
@@ -137,6 +150,11 @@ else {
       onPageChange={(params) => {handlePageChange(params)}}
       headerHeight={50}
       columns={headCells} />
+      {<Snackbar open={open} autoHideDuration={3000} onClose={handleClose}>
+            <Alert severity="success" onClose={handleClose}>
+            {message}
+            </Alert>
+        </Snackbar>}
       </Page>
   )   
 }
