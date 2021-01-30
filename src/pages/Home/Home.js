@@ -9,7 +9,11 @@ import StarIcon from '@material-ui/icons/Star';
 import Grid from "@material-ui/core/Grid";
 import IconButton from '@material-ui/core/IconButton';
 import Snackbar from '@material-ui/core/Snackbar';
+import Toolbar from '@material-ui/core/Toolbar'
 import Alert from '@material-ui/lab/Alert';
+import TextField from '@material-ui/core/TextField';
+import Autocomplete from '@material-ui/lab/Autocomplete';
+import SearchIcon from '@material-ui/icons/Search';
 
 export default function HomePage() {
 
@@ -17,9 +21,13 @@ const [bankData, setBankData] = useState([])
 const [loading, setLoading] = useState(true);
 const [tableLoading, setTableLoading] = useState(false);
 const [open, setOpen] = useState(false);
-const [page, setPage] = React.useState(1);
-const [message, setMessage] = React.useState('');
-const [totalCount, setTotalCount] = React.useState(0);
+const [page, setPage] = useState(1);
+const [options, setOptions] = useState([]);
+const [searchBarOpen, setSearchBarOpen] = useState(false);
+const [searchQuery, setSearchQuery] = useState('');
+const [message, setMessage] = useState('');
+const [totalCount, setTotalCount] = useState(0);
+const suggestionsLoading = searchBarOpen && options.length === 0;
 
 const headCells = [
   {
@@ -109,13 +117,54 @@ const fetchApiData = useCallback(() => {
   })
 });
 
+const fetchAutoSuggestData = useCallback(() => {
+
+  var params = {
+    limit: 5,
+    offset: 0,
+    q: searchQuery
+  };  
+
+  console.log(`Search params: ${Object.values(params)}`)
+
+  axios.get(`${config.server.autocompleteURL}/`, {params}).then((response) => {
+
+    if (response.status === 200) {
+      let data = response.data;
+
+      if (data !== []) {
+        setOptions(data);
+      } 
+    }
+  },   
+  (error) => {
+    console.log(error);
+  });
+
+});
+
+const onSearchInputChange = (inputValue) => {
+
+  setSearchQuery(inputValue);
+
+  if (inputValue.length % 3 === 0) {
+    if (inputValue.length === 0) {
+      setSearchQuery('');
+    } else {
+      fetchAutoSuggestData();
+    }
+
+  } 
+};
+
 useEffect(() => {
   fetchApiData();
 }, []);
 
 if (loading) {
   return (
-    <Page pageTitle={'Bank Branches'}>
+    <Page pageTitle={'Bank Branches'}
+    contentStyle={{ overflow: 'hidden' }}>
       <Grid
       container
       align="center"
@@ -133,7 +182,53 @@ else {
   return (
     <Page 
     pageTitle={'Bank Branches'}
-    contentStyle={{ overflow: 'hidden' }}>
+    contentStyle={{ overflow: 'hidden' }}
+    appBarContent={
+      <Toolbar disableGutters>
+        <Autocomplete
+      id="asynchronous-demo"
+      style={{ width: 300 }}
+      open={searchBarOpen}
+      placeholder={'Search'}
+      onOpen={() => {
+        setSearchBarOpen(true);
+        fetchAutoSuggestData();
+      }}
+      onClose={() => {
+        setSearchBarOpen(false);
+      }}
+      getOptionSelected={(option, value) => option === value}
+      getOptionLabel={(option) => {
+        return `${option.bankBranch} ${option.bankIFSC} ${option.bankAddress} ${option.bankCity}`
+      }}
+      onInputChange={(input, value) => { onSearchInputChange(value) }}
+      options={options}
+      loading={suggestionsLoading}
+      freeSolo={true}
+      renderInput={(params) => (
+        <TextField
+          {...params}
+          variant="outlined"
+          placeholder="Search"
+          InputProps={{
+            ...params.InputProps,
+            startAdornment: (<React.Fragment>
+              <SearchIcon size={20} />
+            </React.Fragment>),
+            endAdornment: (
+              <React.Fragment>
+                {suggestionsLoading ? <CircularProgress color="inherit" size={20} /> : null}
+                {params.InputProps.endAdornment}
+              </React.Fragment>
+            ),
+          }}
+        />
+      )}
+    />
+        </Toolbar>
+    }
+    
+    >
       <DataGrid
       disableSelectionOnClick={true}
       rows={bankData}
