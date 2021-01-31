@@ -1,12 +1,12 @@
 ## Introduction
 
-This project has been created in React.js using the [React Most Wanted] (https://github.com/TarikHuber/react-most-wanted) template engine based on [Material UI design] (https://material-ui.com/).
+This project has been created in React.js using the [React Most Wanted](https://github.com/TarikHuber/react-most-wanted) template engine based on [Material UI design](https://material-ui.com/).
 
 ## Getting Started
 
 ### Installation steps
 
-The project is preconfigured with a [backend server] (https://github.com/AdityaVJ/FyleAssignmentBackend) and can be run locally in a few simple steps listed below:
+The project is preconfigured with a [backend server](https://github.com/AdityaVJ/FyleAssignmentBackend) and can be run locally in a few simple steps listed below:
 
 - Clone the repo on local machine and run `npm install` and wait for the dependencies to be installed.
 
@@ -14,7 +14,7 @@ The project is preconfigured with a [backend server] (https://github.com/AdityaV
 
 - To run the production build, you need to first run `npm run build` to build the project and then start it by executing the `npm start` command. The production build will be an optimized version of the app and will not show debug messages on the console.
 
-Alternatively, you can follow the steps provided in the [backend server repository] (https://github.com/AdityaVJ/FyleAssignmentBackend) if you want to run the backend server on your local machine.
+Alternatively, you can follow the steps provided in the [backend server repository](https://github.com/AdityaVJ/FyleAssignmentBackend) if you want to run the backend server on your local machine.
 
 ### System components Structure
 Let's explain first the system structure to understand its components:
