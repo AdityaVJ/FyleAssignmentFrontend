@@ -7,7 +7,7 @@ import parseLanguages from 'base-shell/lib/utils/locale'
 
 const config = {
     server: {
-        url: 'http://localhost:8080/api',
+        url: 'https://fyle-assignment-backend.herokuapp.com/api',
         get banksUrl() {
             return `${this.url}/bank`
         },
