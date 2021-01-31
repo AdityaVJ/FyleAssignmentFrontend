@@ -2,7 +2,7 @@
 
 This project has been created in React.js using the [React Most Wanted] (https://github.com/TarikHuber/react-most-wanted) template engine based on [Material UI design] (https://material-ui.com/).
 
-## Getting 
+## Getting Started
 
 ### Installation steps
 
